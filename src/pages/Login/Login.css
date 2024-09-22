@@ -1,0 +1,5 @@
+@import url("../../colors.css");
+
+#submitform {
+  background-color: var(--color-background-button-default);
+}

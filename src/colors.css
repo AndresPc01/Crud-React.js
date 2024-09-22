@@ -1,0 +1,11 @@
+:root {
+  --color-background-dark: #343a40;
+  --color-text-mode-dark: #e7e7e8;
+  --color-background-button-default: #727cf5;
+  --color-hover-button: #6973e3;
+  --color-background-header-mode-dark: #3a444e;
+  --color-background-sidebar-mode-dark: #3a444e;
+  --color-background-li-mode-dark: #6973e3;
+  --color--hover-second-background-li-mode-dark: #4b58e4;
+  --color-hover-background-li-mode-dark: #636363;
+}

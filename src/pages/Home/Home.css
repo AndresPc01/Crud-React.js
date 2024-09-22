@@ -1,0 +1,40 @@
+.Container {
+  display: grid;
+  grid-template-columns: 300px 1fr;
+  grid-template-rows: auto 1fr auto;
+  grid-template-areas:
+    "sidebar header"
+    "sidebar main"
+    "sidebar footer";
+  height: 100vh;
+}
+
+header {
+  grid-area: header;
+}
+aside {
+  grid-area: sidebar;
+
+  background-color: #3a444e;
+
+  &::-webkit-scrollbar {
+    width: 5px; /* Ancho de la barra de scroll */
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background-color: #4a5568; /* Color del scroll (thumb) */
+    border-radius: 6px; /* Bordes redondeados */
+  }
+
+  &::-webkit-scrollbar-track {
+    background-color: #343a40; /* Color del fondo de la barra (track) */
+  }
+}
+main {
+  background-color: #343a40;
+  grid-area: main;
+}
+footer {
+  background-color: #343a40;
+  grid-area: footer;
+}
