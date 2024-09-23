@@ -11,7 +11,6 @@ import ConsulProductos from "./pages/Productos/ConsulProductos";
 import ConsulVentas from "./pages/Ventas/ConsulVentas";
 import Dashboard from "./pages/Dashboard/Dashboard";
 import LandingPage from "./pages/LandingPage";
-
 function App() {
   return (
     <>

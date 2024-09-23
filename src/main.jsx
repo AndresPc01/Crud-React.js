@@ -2,14 +2,13 @@ import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
 import App from "./App.jsx";
 import "./index.css";
-import { NextUIProvider } from "@nextui-org/react";
+import { ThemeProvider as NextThemesProvider } from "next-themes";
 
+// Renderizar la aplicación
 createRoot(document.getElementById("root")).render(
   <StrictMode>
-    <NextUIProvider>
-      <main className="dark text-foreground ">
-        <App />
-      </main>
-    </NextUIProvider>
+    <NextThemesProvider attribute="class" defaultTheme="dark">
+      <App />
+    </NextThemesProvider>
   </StrictMode>
 );

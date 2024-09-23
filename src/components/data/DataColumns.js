@@ -1,6 +1,7 @@
 const columnsUser = [
     {name: "NAME", uid: "name"},
     {name: "ROLE", uid: "role"},
+    {name: "EMAIL", uid: "email"},
     {name: "STATUS", uid: "status"},
     {name: "ACTIONS", uid: "actions"},
   ];
@@ -27,5 +28,14 @@ const columnsProductos = [
   { name: "estado_producto", uid: "estado_producto" },
   { name: "ACTIONS", uid: "actions" },
 ];
-export { columnsUser, columnsClient, columnsProveedores, columnsProductos, };
+const columnsVentas = [
+  { name: "nombre_cliente", uid: "nombre_cliente" },
+  { name: "cantidad", uid: "cantidad" },
+  { name: "nombre_producto", uid: "nombre_producto" },
+  { name: "subtotal", uid: "subtotal" },
+  { name: "iva", uid: "iva" },
+  { name: "total", uid: "total" },
+  { name: "ACTIONS", uid: "actions" },
+];
+export { columnsUser, columnsClient, columnsProveedores, columnsProductos, columnsVentas, };
 

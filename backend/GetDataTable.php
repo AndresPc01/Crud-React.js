@@ -15,6 +15,7 @@ function getUsers($mysqli) {
         u.contrasena, 
         u.nombre, 
         u.estado, 
+        u.email, 
         p.nombre_perfil 
     FROM 
         usuario u 
@@ -28,8 +29,9 @@ function getUsers($mysqli) {
         while ($row = mysqli_fetch_assoc($sql)) {
             $users[] = [
                 'id' => $row['idusuario'],
-                'email' => $row['usuario'],
+                'usuario' => $row['usuario'],
                 'name' => $row['nombre'],
+                'email' => $row['email'],
                 'status' => $row['estado'],
                 'role' => $row['nombre_perfil']
             ];
@@ -136,11 +138,54 @@ function getProductos($mysqli) {
 }
 
 
+function getVentas($mysqli) {
+    $sql = mysqli_query($mysqli, "SELECT 
+            v.idventa, 
+            c.idcliente, 
+            c.nombre AS nombre_cliente, 
+            p.idproducto, 
+            p.nombre_producto,
+            p.precio_unidad,
+            v.cantidad,
+            v.cantidad * p.precio_unidad as subtotal,
+            (v.cantidad * p.precio_unidad)* 0.19 as iva, 
+            (v.cantidad * p.precio_unidad) + ((v.cantidad * p.precio_unidad)* 0.19) as total
+        FROM 
+            ventas v    
+        JOIN 
+            cliente c ON v.idclientefk = c.idcliente
+        JOIN 
+            producto p ON v.idproductofk = p.idproducto
+    ");
+
+    $ventas = [];
+
+    if ($sql) {
+        while ($row = mysqli_fetch_assoc($sql)) {
+            $ventas[] = [
+                'id' => $row['idventa'],
+                'id_cliente' => $row['idcliente'],
+                'nombre_cliente' => $row['nombre_cliente'],
+                'id_producto' => $row['idproducto'],
+                'nombre_producto' => $row['nombre_producto'],
+                'cantidad' => $row['cantidad'],
+                'subtotal' => $row['subtotal'],
+                'iva' => $row['iva'],
+                'total' => $row['total']
+            ];
+        }
+        return $ventas;
+    } else {
+        return ['error' => 'Error en la consulta de ventas: ' . mysqli_error($mysqli)];
+    }
+}
+
 $response = [
     'users' => getUsers($mysqli),
     'clients' => getClients($mysqli),
     'proveedores' => getProveedores($mysqli),
     'productos' => getProductos($mysqli),
+    'ventas' => getVentas($mysqli), // Agregamos la consulta de ventas
 ];
 
 echo json_encode($response);

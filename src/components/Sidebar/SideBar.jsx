@@ -2,14 +2,14 @@ import SidebarComponent from "./SidebarComponent";
 import "../../colors.css";
 import { useEffect, useState } from "react";
 // eslint-disable-next-line react/prop-types
-const SideBar = ({ menuExpanded }) => {
+const SideBar = ({ menuExpanded, openModal }) => {
   const [ExpanMenu, setExpanMenu] = useState(() => {
     const savedState = localStorage.getItem("Menu");
     try {
-      return savedState ? JSON.parse(savedState) : true; // Si es válido, lo usa; si no, inicializa con un objeto vacío
+      return savedState ? JSON.parse(savedState) : true;
     } catch (e) {
-      console.error("Invalid JSON in localStorage", e); // Mostrar el error en la consola
-      return true; // Devolver objeto vacío si hay un error
+      console.error("Invalid JSON in localStorage", e);
+      return true;
     }
   });
 
@@ -21,6 +21,10 @@ const SideBar = ({ menuExpanded }) => {
     setExpanMenu(!ExpanMenu);
     if (menuExpanded) menuExpanded(!ExpanMenu);
   };
+  const handleOpenModal = (type) => {
+    openModal(type);
+  };
+
   return (
     <section className="flex flex-col justify-between min-h-full overflow-hidden">
       <div className="flex mt-2 mx-3">
@@ -42,7 +46,7 @@ const SideBar = ({ menuExpanded }) => {
 
       <div className="flex flex-col rounded-lg">
         <ul className="flex flex-col gap-4 w-full">
-          <SidebarComponent expanMenu={ExpanMenu} />
+          <SidebarComponent expanMenu={ExpanMenu} openModal={handleOpenModal} />
         </ul>
       </div>
 

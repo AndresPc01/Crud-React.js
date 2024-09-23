@@ -1,4 +1,3 @@
-import React, { useEffect, useState } from "react";
 import {
   Table,
   TableHeader,
@@ -18,61 +17,72 @@ import {
   ModalContent,
   Modal,
   useDisclosure,
+  Input,
 } from "@nextui-org/react";
 import { EditIcon } from "../../components/icons/EditIcon";
 import { DeleteIcon } from "../../components/icons/DeleteIcon";
-import { EyeIcon } from "../../components/icons/EyeIcon";
 import { columnsUser } from "../../components/data/DataColumns";
+import { useEffect, useState } from "react";
+import axios from "axios";
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const statusColorMap = {
   activado: "success",
   Desactivado: "danger",
 };
 
-const ConfirmEliminacion = () => {};
-
 export default function ConsulUsuario() {
+  const {
+    isOpen: isLoginModalOpen,
+    onOpen: openLoginModal,
+    onOpenChange: onLoginModalChange,
+  } = useDisclosure();
+  const {
+    isOpen: isDeleteModalOpen,
+    onOpen: openDeleteModal,
+    onOpenChange: onDeleteModalChange,
+  } = useDisclosure();
+
   const [cargando, setCargando] = useState(true);
   const [users, setUsers] = useState([]);
   const [error, setError] = useState(null);
-  const [abierto, setAbierto] = useState(false);
+  const [datuser, setDataUser] = useState(null);
+  const [edituser, setEditUser] = useState(null);
+  const [username, setUsername] = useState("");
+  const [email, setEmail] = useState("");
+  const [name, setName] = useState("");
 
-  const confirmModal = () => {
-    setAbierto(!abierto);
-  };
+  const fetchUsers = async () => {
+    try {
+      await new Promise((resolve) => setTimeout(resolve, 1000));
 
-  const valorestado = abierto;
-  console.log(abierto);
+      const response = await fetch(
+        "http://localhost/Proyectos/app-curd/backend/GetDataTable.php"
+      );
 
-  useEffect(() => {
-    const fetchUsers = async () => {
-      try {
-        await new Promise((resolve) => setTimeout(resolve, 2000));
-
-        const response = await fetch(
-          "http://localhost/Proyectos/app-curd/backend/GetDataTable.php"
-        );
-
-        if (!response.ok) {
-          throw new Error("Network response was not ok");
-        }
-
-        const data = await response.json();
-        if (!data.users || !Array.isArray(data.users)) {
-          throw new Error("Received data is not correctly formatted");
-        }
-
-        const usersWithStatus = data.users.map((user) => ({
-          ...user,
-          status: user.status === "1" ? "activado" : "Desactivado",
-        }));
-        setUsers(usersWithStatus);
-      } catch (error) {
-        setError("Error al cargar los datos. Inténtelo de nuevo más tarde.");
+      if (!response.ok) {
+        throw new Error("Network response was not ok");
       }
-      setCargando(false);
-    };
 
+      const data = await response.json();
+      if (!data.users || !Array.isArray(data.users)) {
+        throw new Error("Received data is not correctly formatted");
+      }
+
+      const usersWithStatus = data.users.map((user) => ({
+        ...user,
+        status: user.status === "1" ? "activado" : "Desactivado",
+      }));
+      setUsers(usersWithStatus);
+    } catch (error) {
+      setError(
+        "Error al cargar los datos. Inténtelo de nuevo más tarde" + error
+      );
+    }
+    setCargando(false);
+  };
+  useEffect(() => {
     fetchUsers();
   }, []);
 
@@ -90,18 +100,67 @@ export default function ConsulUsuario() {
     );
   };
 
-  const renderCell = React.useCallback((user, columnKey) => {
-    const cellValue = user[columnKey];
+  const handleUserDelete = (user) => {
+    setDataUser(user);
+    openDeleteModal();
+  };
 
+  const handleUserEdit = (user) => {
+    setEditUser(user);
+    openLoginModal();
+  };
+  const SendEditUser = (id) => {
+    const URL = "http://localhost/Proyectos/app-curd/backend/EditUser.php";
+    let fData = new FormData();
+    fData.append("action", "actualizar"); // Añadir acción
+    fData.append("idusuario", id);
+    fData.append("username", username);
+    fData.append("email", email);
+    fData.append("name", name);
+
+    axios
+      .post(URL, fData)
+      .then((response) => {
+        if (response.data.result === "success") {
+          toast.success("Cambios Guardados");
+          fetchUsers();
+        } else {
+          toast.error("Error");
+        }
+      })
+      .catch((error) => setError(error));
+  };
+
+  const sendDeleteUser = (id) => {
+    const URL = "http://localhost/Proyectos/app-curd/backend/EditUser.php";
+    let fData = new FormData();
+    fData.append("action", "eliminar"); // Añadir acción
+    fData.append("idusuario", id);
+
+    axios
+      .post(URL, fData)
+      .then((response) => {
+        if (response.data.result === "success") {
+          toast.success("Eliminado con Éxito");
+          fetchUsers();
+        } else {
+          toast.error("Error");
+        }
+      })
+      .catch((error) => toast.error(error));
+  };
+
+  const renderCell = (user, columnKey) => {
+    const cellValue = user[columnKey];
     switch (columnKey) {
       case "name":
         return (
           <User
             avatarProps={{ radius: "lg", src: user.avatar }}
-            description={user.email}
+            description={user.usuario}
             name={cellValue}
           >
-            {user.email}
+            {user.usuario}
           </User>
         );
       case "role":
@@ -127,22 +186,20 @@ export default function ConsulUsuario() {
       case "actions":
         return (
           <div className="relative flex justify-between items-center gap-2">
-            <Tooltip color="foreground" content="Details">
-              <span className="text-lg text-default-400 cursor-pointer active:opacity-50">
-                <EyeIcon />
-              </span>
-            </Tooltip>
             <Tooltip color="warning" content="Edit user">
               <span
-                onClick={ConfirmEliminacion}
-                className="text-lg text-warning cursor-pointer active:opacity-50"
+                onClick={() => handleUserEdit(user)}
+                className="text-lg text-warning cursor-pointer active:opacity-80"
               >
                 <EditIcon />
               </span>
             </Tooltip>
             <Tooltip color="danger" content="Delete user">
-              <span className="text-lg text-danger cursor-pointer active:opacity-50">
-                <DeleteIcon onClick={confirmModal} />
+              <span
+                onClick={() => handleUserDelete(user)}
+                className="text-lg text-danger cursor-pointer active:opacity-50"
+              >
+                <DeleteIcon />
               </span>
             </Tooltip>
             <Switch
@@ -156,7 +213,7 @@ export default function ConsulUsuario() {
       default:
         return cellValue;
     }
-  }, []);
+  };
 
   if (cargando) {
     return (
@@ -176,6 +233,7 @@ export default function ConsulUsuario() {
 
   return (
     <div className="flex justify-center items-center w-full mt-10 ">
+      <ToastContainer className={"fixed z-10 right-0 top-0"} />
       <div className="overflow-auto w-full" style={{ minWidth: "600px" }}>
         <Table aria-label="Table with user data" className="w-auto mx-10">
           <TableHeader columns={columnsUser}>
@@ -199,46 +257,93 @@ export default function ConsulUsuario() {
           </TableBody>
         </Table>
       </div>
-      <Button onPress={onOpen}>Open Modal</Button>
-      <Modal isOpen={isOpen} onOpenChange={onOpenChange}>
-        <ModalContent>
-          {(onClose) => (
-            <>
-              <ModalHeader className="flex flex-col gap-1">
-                Modal Title
-              </ModalHeader>
-              <ModalBody>
-                <p>
-                  Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-                  Nullam pulvinar risus non risus hendrerit venenatis.
-                  Pellentesque sit amet hendrerit risus, sed porttitor quam.
-                </p>
-                <p>
-                  Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-                  Nullam pulvinar risus non risus hendrerit venenatis.
-                  Pellentesque sit amet hendrerit risus, sed porttitor quam.
-                </p>
-                <p>
-                  Magna exercitation reprehenderit magna aute tempor cupidatat
-                  consequat elit dolor adipisicing. Mollit dolor eiusmod sunt ex
-                  incididunt cillum quis. Velit duis sit officia eiusmod Lorem
-                  aliqua enim laboris do dolor eiusmod. Et mollit incididunt
-                  nisi consectetur esse laborum eiusmod pariatur proident Lorem
-                  eiusmod et. Culpa deserunt nostrud ad veniam.
-                </p>
-              </ModalBody>
-              <ModalFooter>
-                <Button color="danger" variant="light" onPress={onClose}>
-                  Close
-                </Button>
-                <Button color="primary" onPress={onClose}>
-                  Action
-                </Button>
-              </ModalFooter>
-            </>
-          )}
-        </ModalContent>
-      </Modal>{" "}
+
+      {edituser && (
+        <Modal
+          isOpen={isLoginModalOpen}
+          onOpenChange={onLoginModalChange}
+          placement="top-center"
+        >
+          <ModalContent>
+            {(onClose) => (
+              <>
+                <ModalHeader className="flex flex-col gap-1 text-center">
+                  Editar Usuario
+                </ModalHeader>
+                <ModalBody>
+                  <Input
+                    label="Nombre"
+                    onChange={(e) => setName(e.target.value)}
+                    placeholder={edituser.name}
+                    variant="bordered"
+                  />
+                  <Input
+                    label="Username"
+                    onChange={(e) => setUsername(e.target.value)}
+                    placeholder={edituser.usuario}
+                    variant="bordered"
+                  />
+                  <Input
+                    label="Email"
+                    onChange={(e) => setEmail(e.target.value)}
+                    placeholder={edituser.email}
+                    variant="bordered"
+                  />
+                  <Input
+                    label="Rol"
+                    placeholder={edituser.role}
+                    variant="bordered"
+                  />
+                </ModalBody>
+                <ModalFooter>
+                  <Button color="danger" variant="flat" onPress={onClose}>
+                    ClosesendDeleteUser
+                  </Button>
+                  <Button
+                    color="primary"
+                    onClick={() => SendEditUser(edituser.id)}
+                    onPress={onClose}
+                  >
+                    Guardar
+                  </Button>
+                </ModalFooter>
+              </>
+            )}
+          </ModalContent>
+        </Modal>
+      )}
+
+      {datuser && (
+        <Modal isOpen={isDeleteModalOpen} onOpenChange={onDeleteModalChange}>
+          <ModalContent>
+            {(onClose) => (
+              <>
+                <ModalHeader className="flex text-center  flex-col gap-1">
+                  Confirmar Eliminación
+                </ModalHeader>
+                <ModalBody>
+                  <p className="flex justify-between">
+                    Al confirmar, eliminarás al usuario
+                    <b className="text-red-400">{datuser.name}</b>
+                  </p>
+                </ModalBody>
+                <ModalFooter>
+                  <Button color="danger" variant="light" onPress={onClose}>
+                    Cancelar
+                  </Button>
+                  <Button
+                    color="primary"
+                    onClick={() => sendDeleteUser(datuser.id)}
+                    onPress={onClose}
+                  >
+                    Confirmar
+                  </Button>
+                </ModalFooter>
+              </>
+            )}
+          </ModalContent>
+        </Modal>
+      )}
     </div>
   );
 }
