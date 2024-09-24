@@ -25,11 +25,6 @@ export default function AgregarProveedor({ isOpen, onClose }) {
   const [ciudad, setCiudad] = useState("");
   const [idestado_proveedor, setIdestado_proveedor] = useState("");
 
-  const handleOpen = (size) => {
-    setSize(size);
-    onOpen();
-  };
-
   const sendUsuario = () => {
     const url = "http://localhost/Proyectos/app-curd/backend/GetData.php";
     let fData = new FormData();
@@ -41,16 +36,18 @@ export default function AgregarProveedor({ isOpen, onClose }) {
     axios
       .post(url, fData)
       .then((response) => {
-        console.log(response.data);
         if (
-          response.data.sendCliente &&
-          response.data.sendCliente.result === "success"
+          response.data.sendProveedor &&
+          response.data.sendProveedor.result === "success"
         ) {
           toast.success("Cliente registrado con éxito");
-          onClose();
+          setTimeout(() => {
+            onClose();
+          }, 2000);
         } else {
+          console.log(response.data.sendProveedor.error);
           toast.error(
-            response.data.sendCliente.error || "Error al registrar Cliente"
+            response.data.sendProveedor.error || "Error al registrar Cliente"
           );
         }
       })
@@ -63,12 +60,6 @@ export default function AgregarProveedor({ isOpen, onClose }) {
     <>
       <div className="flex flex-wrap gap-3">
         <ToastContainer className={"absolute z-10 right-0 top-0"} />
-
-        {sizes.map((size) => (
-          <Button key={size} onPress={() => handleOpen(size)}>
-            Open {size}
-          </Button>
-        ))}
       </div>
       <Modal size={"5xl"} isOpen={isOpen} onClose={onClose}>
         <ModalContent>
@@ -80,18 +71,21 @@ export default function AgregarProveedor({ isOpen, onClose }) {
               <ModalBody className="grid grid-cols-2">
                 <Input
                   label="nombre "
+                  value={nombre}
                   variant="bordered"
                   aria-label="nombre "
                   onChange={(e) => setNombre(e.target.value)}
                 />
                 <Input
                   label="telefono "
+                  value={telefono}
                   variant="bordered"
                   aria-label="telefono "
                   onChange={(e) => setTelefono(e.target.value)}
                 />
                 <Input
                   label="Ciudad"
+                  value={ciudad}
                   variant="bordered"
                   aria-label="Ciudad"
                   onChange={(e) => setCiudad(e.target.value)}
@@ -99,7 +93,6 @@ export default function AgregarProveedor({ isOpen, onClose }) {
                 <Select
                   className="w-full"
                   placeholder="Selecciona el estado H o D"
-                  name="idestado"
                   aria-label="Estado"
                 >
                   <SelectItem

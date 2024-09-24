@@ -74,6 +74,11 @@ export default function ConsulVentas() {
 
   useEffect(() => {
     fetchVentas();
+    const intervalId = setInterval(() => {
+      fetchVentas();
+    }, 10000);
+
+    return () => clearInterval(intervalId);
   }, []);
 
   const handleUserDelete = (venta) => {
@@ -119,12 +124,12 @@ export default function ConsulVentas() {
       });
   };
 
-  const sendDeleteUser = (id) => {
+  const sendDeleteUser = (id, cantidad) => {
     const URL = "http://localhost/Proyectos/app-curd/backend/EditUser.php";
     let fData = new FormData();
     fData.append("action", "eliminarventa");
     fData.append("idventa", id);
-
+    fData.append("cantidad", cantidad);
     axios
       .post(URL, fData)
       .then((response) => {
@@ -300,8 +305,10 @@ export default function ConsulVentas() {
                   Confirmar Eliminación
                 </ModalHeader>
                 <ModalBody className="flex flex-col items-center gap-2">
-                  ¿Está seguro de que desea eliminar la venta con ID{" "}
-                  <span className="font-bold">{datUser.idventa}</span>?
+                  <span className="font-bold">
+                    ¿Está seguro de que desea eliminar la venta con ID ,
+                    {datUser.id} ?
+                  </span>
                 </ModalBody>
                 <ModalFooter>
                   <Button color="danger" variant="flat" onPress={onClose}>
@@ -310,7 +317,7 @@ export default function ConsulVentas() {
                   <Button
                     color="primary"
                     onClick={() => {
-                      sendDeleteUser(datUser.idventa);
+                      sendDeleteUser(datUser.id, datUser.cantidad);
                       onClose();
                     }}
                   >

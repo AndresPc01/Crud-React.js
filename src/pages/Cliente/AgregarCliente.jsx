@@ -55,7 +55,9 @@ export default function AgregarCliente({ isOpen, onClose }) {
           response.data.sendCliente.result === "success"
         ) {
           toast.success("Cliente registrado con éxito");
-          onClose();
+          setTimeout(() => {
+            onClose();
+          }, 2000);
         } else {
           toast.error(
             response.data.sendCliente.error || "Error al registrar Cliente"

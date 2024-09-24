@@ -154,13 +154,13 @@ function sendProveedor($mysqli) {
 
     if (isset($_POST['nombre_proveedor'], $_POST['telefono_proveedor'], $_POST['ciudad_proveedor'], $_POST['estado_proveedor'])) {
         $nombre_proveedor = $_POST['nombre_proveedor'];
-        $telefono_proveedor = $_POST['telefono_proveedor'];
+        $telefono_proveedor = (int)$_POST['telefono_proveedor'];
         $ciudad_proveedor = $_POST['ciudad_proveedor'];
         $estado_proveedor = (int)$_POST['estado_proveedor'];
 
 
         $stmt = $mysqli->prepare("INSERT INTO `proveedor`(`nombre_proveedor`, `telefono_proveedor`, `ciudad_proveedor`, `estado_proveedor`) VALUES (?, ?, ?, ?)");
-        $stmt->bind_param("sisi", $identidad, $nombre, $telefono, $direccion, $idestado_cliente);
+        $stmt->bind_param("sisi", $nombre_proveedor, $telefono_proveedor, $ciudad_proveedor, $estado_proveedor);
 
         if ($stmt->execute()) {
             return ['result' => 'success'];
@@ -174,22 +174,22 @@ function sendProveedor($mysqli) {
 
 
 
-function sendProdcuto($mysqli) {
+function sendProducto($mysqli) {
 
-    if (isset($_POST['nombre'], $_POST['precio'], $_POST['cantidad'], $_POST['nombre_proveedor'], $_POST['idestado'], $_POST['idproveedor'])) {
+    if (isset($_POST['nombre'], $_POST['precio'], $_POST['cantidad'], $_POST['idestado'], $_POST['idproveedor'])) {
         $nombre_producto = $_POST['nombre'];
-        $precio_unidad = $_POST['precio'];
-        $cantidad = $_POST['cantidad'];
-        $idproveedorfk = $_POST['idproveedor'];
+        $precio_unidad = (int)$_POST['precio'];
+        $cantidad = (int)$_POST['cantidad'];
+        $idproveedorfk = (int)$_POST['idproveedor'];
         $estado_producto = (int)$_POST['idestado'];
 
-        $stmt = $mysqli->prepare("INSERT INTO `proveedor`(`nombre_proveedor`, `telefono_proveedor`, `ciudad_proveedor`, `estado_proveedor`) VALUES (?, ?, ?, ?)");
-        $stmt->bind_param("sisi", $identidad, $nombre, $telefono, $direccion, $idestado_cliente);
+        $stmt = $mysqli->prepare("INSERT INTO `producto`(`nombre_producto`, `cantidad`, `precio_unidad`, `idproveedorfk`, `estado_producto`) VALUES (?, ?, ?, ?, ?)");
+        $stmt->bind_param("siiii", $nombre_producto, $cantidad, $precio_unidad, $idproveedorfk, $estado_producto);
 
         if ($stmt->execute()) {
             return ['result' => 'success'];
         } else {
-            return ['error' => 'Error al registrar proveedor: ' . mysqli_error($mysqli)];
+            return ['error' => 'Error al registrar producto: ' . mysqli_error($mysqli)];
         }
     } else {
         return ['error' => 'Faltan datos requeridos.'];
@@ -197,27 +197,29 @@ function sendProdcuto($mysqli) {
 }
 
 function sendVenta($mysqli) {
-
-    if (isset($_POST['idperfil'], $_POST['cantidad'], $_POST['producto'], $_POST['subtotal'], $_POST['iva'], $_POST['total'])) {
+    if (isset($_POST['idperfil'], $_POST['cantidad'], $_POST['producto'])) {
         $idperfil = (int)$_POST['idperfil'];
-        $cantidad =(int)$_POST['cantidad'];
+        $cantidad = (int)$_POST['cantidad'];
         $producto = (int)$_POST['producto'];
-        $subtotal =(int)$_POST['subtotal'];
-        $iva = (int)$_POST['iva'];
-        $total = (int)$_POST['total'];
 
-        $stmt = $mysqli->prepare("INSERT INTO `ventas`(`idclientefk`, `idproductofk`, `cantidad`, `subtotal`, `iva`, `total`) VALUES (?, ?, ?, ?, ?, ?)");
-        $stmt->bind_param("iiiiii", $idperfil, $producto, $cantidad, $subtotal, $iva, $total);
-
+        $stmt = $mysqli->prepare("INSERT INTO `ventas`(`idclientefk`, `idproductofk`, `cantidad`) VALUES (?, ?, ?)");
+        $stmt->bind_param("iii", $idperfil, $producto, $cantidad);
+        
+        
         if ($stmt->execute()) {
+            $stpt = $mysqli->prepare("UPDATE producto SET cantidad = cantidad - ? WHERE idproducto = ?");
+            $stpt->bind_param("ii", $cantidad, $producto);
+            $stpt->execute(); 
+
             return ['result' => 'success'];
         } else {
-            return ['error' => 'Error al registrar venta: ' . mysqli_error($mysqli)];
+            return ['error' => 'Error al registrar venta: ' . $mysqli->error];
         }
     } else {
         return ['error' => 'Faltan datos requeridos.'];
     }
 }
+
 
 
 
@@ -229,6 +231,7 @@ $response = [
     'sendUsuario' => sendUsuario($mysqli), 
     'sendCliente' => sendCliente($mysqli), 
     'sendProveedor' => sendProveedor($mysqli),
+    'sendProducto' => sendProducto($mysqli),
     'sendVenta' => sendVenta($mysqli),  
 
 ];

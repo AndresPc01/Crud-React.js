@@ -85,6 +85,11 @@ export default function ConsulProveedor() {
 
   useEffect(() => {
     fetchProveedores();
+    const intervalId = setInterval(() => {
+      fetchProveedores();
+    }, 10000);
+
+    return () => clearInterval(intervalId);
   }, []);
 
   const handleToggleStatus = (id) => {
@@ -142,7 +147,7 @@ export default function ConsulProveedor() {
     const URL = "http://localhost/Proyectos/app-curd/backend/EditUser.php";
     let fData = new FormData();
     fData.append("action", "eliminarproveedor");
-    fData.append("idcliente", id);
+    fData.append("idproveedor", id);
 
     axios
       .post(URL, fData)

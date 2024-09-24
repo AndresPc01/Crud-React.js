@@ -54,7 +54,6 @@ export default function ConsulCliente() {
 
   const fetchClients = async () => {
     try {
-      // Simula tiempo de carga, eliminar en producción
       await new Promise((resolve) => setTimeout(resolve, 2000));
 
       const response = await fetch(
@@ -65,7 +64,6 @@ export default function ConsulCliente() {
       }
       const data = await response.json();
 
-      // Verifica y transforma los datos
       if (!data.clients || !Array.isArray(data.clients)) {
         throw new Error("Received data is not correctly formatted");
       }
@@ -85,6 +83,11 @@ export default function ConsulCliente() {
 
   useEffect(() => {
     fetchClients();
+    const intervalId = setInterval(() => {
+      fetchClients();
+    }, 10000);
+
+    return () => clearInterval(intervalId);
   }, []);
 
   const handleToggleStatus = (id) => {

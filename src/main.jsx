@@ -4,7 +4,6 @@ import App from "./App.jsx";
 import "./index.css";
 import { ThemeProvider as NextThemesProvider } from "next-themes";
 
-// Renderizar la aplicación
 createRoot(document.getElementById("root")).render(
   <StrictMode>
     <NextThemesProvider attribute="class" defaultTheme="dark">

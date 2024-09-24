@@ -132,6 +132,40 @@ function eliminarProducto($mysqli) {
     }
 }
 
+function eliminarVenta($mysqli) {
+    if (isset($_POST['idventa'])) {
+        $idproducto = $_POST['idventa'];
+        $stmt = $mysqli->prepare("DELETE FROM `producto` WHERE `idventa`=?");
+        $stmt->bind_param("i", $idproducto);
+        $sql = $stmt->execute();
+
+        return $sql ? "success" : mysqli_error($mysqli);  
+    } else {
+        return "missing_parameters"; 
+    }
+}
+function eliminarventa($mysqli) {
+    if (isset($_POST['idventa'] ,$_POST['cantidad']  )) {
+        $idventa = (int)$_POST['idventa'];
+        $cantidad = (int)$_POST['cantidad'];
+        $stmt = $mysqli->prepare("DELETE FROM `producto` WHERE `idventa`=?");
+        $stmt->bind_param("i", $idventa);
+  
+        if ($stmt->execute()) {
+            $stpt = $mysqli->prepare("UPDATE producto SET cantidad = cantidad + ? WHERE idproducto = ?");
+            $stpt->bind_param("ii", $cantidad, $idproducto);
+            $stpt->execute(); 
+
+            return ['result' => 'success'];
+        } else {
+            return ['error' => 'Error al eliminar venta: ' . $mysqli->error];
+        }
+    } else {
+        return "missing_parameters"; 
+    }
+}
+
+
 
 $response = [];
 

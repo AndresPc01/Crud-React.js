@@ -82,8 +82,15 @@ export default function ConsulUsuario() {
     }
     setCargando(false);
   };
+
   useEffect(() => {
     fetchUsers();
+
+    const intervalId = setInterval(() => {
+      fetchUsers();
+    }, 10000);
+
+    return () => clearInterval(intervalId);
   }, []);
 
   const handleToggleStatus = (id) => {

@@ -30,11 +30,6 @@ export default function AgregarProducto({ isOpen, onClose }) {
   const [idestado, setIdestado] = useState("");
   const [idproveedor, setIdproveedor] = useState("");
 
-  const handleOpen = (size) => {
-    setSize(size);
-    onOpen();
-  };
-
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -64,16 +59,17 @@ export default function AgregarProducto({ isOpen, onClose }) {
     axios
       .post(url, fData)
       .then((response) => {
-        console.log(response.data);
         if (
-          response.data.sendProveedor &&
-          response.data.sendProveedor.result === "success"
+          response.data.sendProducto &&
+          response.data.sendProducto.result === "success"
         ) {
-          toast.success("Usuario registrado con éxito");
-          onClose();
+          toast.success("producto registrado con éxito");
+          setTimeout(() => {
+            onClose();
+          }, 2000);
         } else {
           toast.error(
-            response.data.sendProveedor.error || "Error al registrar usuario"
+            response.data.sendProducto.error || "Error al registrar usuario"
           );
         }
       })
@@ -86,84 +82,81 @@ export default function AgregarProducto({ isOpen, onClose }) {
     <>
       <div className="flex flex-wrap gap-3">
         <ToastContainer className={"absolute z-10 right-0 top-0"} />
-
-        {sizes.map((size) => (
-          <Button key={size} onPress={() => handleOpen(size)}>
-            Open {size}
-          </Button>
-        ))}
       </div>
       <Modal size={"5xl"} isOpen={isOpen} onClose={onClose}>
         <ModalContent>
-          {(onClose) => (
-            <>
-              <ModalHeader className="flex flex-col gap-1">
-                Agregar Producto
-              </ModalHeader>
-              <ModalBody className="grid grid-cols-2">
-                <Input
-                  label="Nombre"
-                  variant="bordered"
-                  aria-label="NOmbre Producto"
-                  onChange={(e) => setNombre(e.target.value)}
-                />
-                <Input
-                  label="Cantidad"
-                  variant="bordered"
-                  aria-label="Cantidad Producto"
-                  onChange={(e) => setCantidad(e.target.value)}
-                />
-                <Input
-                  label="Precio"
-                  variant="bordered"
-                  aria-label="Precio Unidad"
-                  onChange={(e) => setPrecio(e.target.value)}
-                />
-                <Select
-                  className="w-full"
-                  placeholder="Selecciona el estado H o D"
-                  name="idestado"
-                  aria-label="Estado"
+          <>
+            <ModalHeader className="flex flex-col gap-1">
+              Agregar Producto
+            </ModalHeader>
+            <ModalBody className="grid grid-cols-2">
+              <Input
+                label="Nombre"
+                variant="bordered"
+                value={nombre}
+                aria-label="Nombre Producto"
+                onChange={(e) => setNombre(e.target.value)}
+              />
+              <Input
+                label="Cantidad"
+                variant="bordered"
+                value={cantidad}
+                aria-label="Cantidad Producto"
+                onChange={(e) => setCantidad(e.target.value)}
+              />
+              <Input
+                label="Precio"
+                variant="bordered"
+                value={precio}
+                aria-label="Precio Unidad"
+                onChange={(e) => setPrecio(e.target.value)}
+              />
+              <Select
+                className="w-full"
+                placeholder="Selecciona el estado H o D"
+                aria-label="Estado"
+              >
+                <SelectItem
+                  textValue="Item 1"
+                  value={1}
+                  onPress={(e) => setIdestado(e.target.value)}
                 >
-                  <SelectItem
-                    value={1}
-                    onPress={(e) => setIdestado(e.target.value)}
-                  >
-                    Habilitado
-                  </SelectItem>
-                  <SelectItem
-                    value={2}
-                    onPress={(e) => setIdestado(e.target.value)}
-                  >
-                    Desabilitado
-                  </SelectItem>
-                </Select>
-                <Select
-                  className="w-full"
-                  placeholder="Selecciona al proveedor"
-                  aria-label="proveedores disponibles"
-                  name="idproveedor"
+                  Habilitado
+                </SelectItem>
+                <SelectItem
+                  textValue="Item 2"
+                  value={2}
+                  onPress={(e) => setIdestado(e.target.value)}
                 >
-                  {perfildata.map((proveedores) => (
-                    <SelectItem
-                      onPress={() => setIdproveedor(proveedores.id)}
-                      key={proveedores.id}
-                    >
-                      {proveedores.nombre_proveedor}
-                    </SelectItem>
-                  ))}
-                </Select>
-              </ModalBody>
-              <ModalFooter>
-                <Button color="danger" variant="light" onPress={onClose}>
-                  Close
-                </Button>
-                <Button color="primary" onPress={() => sendUsuario()}>
-                  Guardar
-                </Button>
-              </ModalFooter>
-            </>
-          )}
+                  Desabilitado
+                </SelectItem>
+              </Select>
+              <Select
+                textValue="Item 2"
+                className="w-full"
+                placeholder="Selecciona al proveedor"
+                aria-label="proveedores disponibles"
+              >
+                {perfildata.map((proveedores) => (
+                  <SelectItem
+                    textValue="Item 4"
+                    onPress={() => setIdproveedor(proveedores.id)}
+                    key={proveedores.id}
+                  >
+                    {proveedores.nombre_proveedor}
+                  </SelectItem>
+                ))}
+              </Select>
+            </ModalBody>
+            <ModalFooter>
+              <Button color="danger" variant="light" onPress={onClose}>
+                Close
+              </Button>
+              <Button color="primary" onPress={() => sendUsuario()}>
+                Guardar
+              </Button>
+            </ModalFooter>
+          </>
         </ModalContent>
       </Modal>
     </>

@@ -26,9 +26,6 @@ export default function AgregarVenta({ isOpen, onClose }) {
   const [perfil, setIdperfil] = useState("");
   const [cantidad, setCantidad] = useState("");
   const [producto, setProducto] = useState("");
-  const [subtotal, setsubtotal] = useState("");
-  const [iva, setiva] = useState("");
-  const [total, settotal] = useState("");
 
   useEffect(() => {
     const fetchData = async () => {
@@ -62,9 +59,6 @@ export default function AgregarVenta({ isOpen, onClose }) {
     fData.append("idperfil", perfil);
     fData.append("cantidad", cantidad);
     fData.append("producto", producto);
-    fData.append("subtotal", subtotal);
-    fData.append("iva", iva);
-    fData.append("total", total);
 
     axios
       .post(url, fData)
@@ -74,7 +68,9 @@ export default function AgregarVenta({ isOpen, onClose }) {
           response.data.sendVenta.result === "success"
         ) {
           toast.success("venta registrada con éxito");
-          onClose();
+          setTimeout(() => {
+            onClose();
+          }, 2000);
         } else {
           toast.error(
             response.data.sendVenta.error || "Error al registrar usuario"
@@ -134,25 +130,6 @@ export default function AgregarVenta({ isOpen, onClose }) {
                   </SelectItem>
                 ))}
               </Select>
-
-              <Input
-                label="subtotal"
-                variant="bordered"
-                aria-label="subtotal"
-                onChange={(e) => setsubtotal(e.target.value)}
-              />
-              <Input
-                label="iva"
-                variant="bordered"
-                aria-label="iva"
-                onChange={(e) => setiva(e.target.value)}
-              />
-              <Input
-                label="total"
-                variant="bordered"
-                aria-label="total"
-                onChange={(e) => settotal(e.target.value)}
-              />
             </ModalBody>
             <ModalFooter>
               <Button color="primary" onPress={() => sendUsuario()}>

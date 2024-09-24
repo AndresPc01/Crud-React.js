@@ -22,6 +22,7 @@ export default function AgregarUsuario({ isOpen, onClose }) {
   const [loading, setLoading] = useState(true);
 
   const { isOpen: modalOpen, onOpen, onClose: modalClose } = useDisclosure();
+  const [isVisible, setIsVisible] = useState(false);
 
   const [usuario, setUsuario] = useState("");
   const [contraseña, setContraseña] = useState("");
@@ -74,7 +75,9 @@ export default function AgregarUsuario({ isOpen, onClose }) {
           response.data.sendUsuario.result === "success"
         ) {
           toast.success("Usuario registrado con éxito");
-          onClose();
+          setTimeout(() => {
+            onClose();
+          }, 2000);
         } else {
           toast.error(
             response.data.sendUsuario.error || "Error al registrar usuario"
@@ -101,12 +104,14 @@ export default function AgregarUsuario({ isOpen, onClose }) {
               <Input
                 label="Usuario"
                 variant="bordered"
+                isRequired
                 aria-label="Usuario"
                 onChange={(e) => setUsuario(e.target.value)}
               />
               <Input
                 label="Contraseña"
                 variant="bordered"
+                isRequired
                 type={isVisible ? "text" : "password"}
                 aria-label="Contraseña"
                 onChange={(e) => setContraseña(e.target.value)}
@@ -114,19 +119,21 @@ export default function AgregarUsuario({ isOpen, onClose }) {
               <Input
                 label="Nombre"
                 variant="bordered"
+                isRequired
                 aria-label="Nombre"
                 onChange={(e) => setNombre(e.target.value)}
               />
               <Input
                 label="Email"
                 type="email"
+                isRequired
                 variant="bordered"
                 aria-label="Email"
                 onChange={(e) => setEmail(e.target.value)}
               />
               <Select
                 className="w-full"
-                placeholder="Selecciona el estado H o D"
+                placeholder="Selecciona el estado"
                 name="idestado"
                 aria-label="Estado"
               >

@@ -11,5 +11,6 @@
 }
 
 body {
+  background-color: var(--color-background-dark);
   color: var(--color-text-mode-dark);
 }

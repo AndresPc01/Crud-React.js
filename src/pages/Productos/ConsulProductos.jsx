@@ -84,6 +84,11 @@ export default function ConsulProductos() {
   };
   useEffect(() => {
     fetchProductos();
+    const intervalId = setInterval(() => {
+      fetchProductos();
+    }, 10000);
+
+    return () => clearInterval(intervalId);
   }, []);
 
   const handleToggleStatus = (id) => {
@@ -128,7 +133,7 @@ export default function ConsulProductos() {
     axios
       .post(URL, fData)
       .then((response) => {
-        console.log(response.data); // Añadir esta línea
+        console.log(response.data);
         if (response.data.result === "success") {
           toast.success("Cambios Guardados");
           fetchProductos();
