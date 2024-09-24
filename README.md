@@ -31,7 +31,7 @@ Eliminar usuario: ![image](https://github.com/user-attachments/assets/ed2b436b-1
 los  diseños son asi para cada uno ya sea cliente , proveedor, producto o ventas
 
 
-
+Desarrollador : @Andres Roso
 
 
 
