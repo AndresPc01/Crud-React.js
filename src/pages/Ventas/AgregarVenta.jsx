@@ -23,12 +23,12 @@ export default function AgregarVenta({ isOpen, onClose }) {
 
   const { isOpen: modalOpen, onOpen, onClose: modalClose } = useDisclosure();
 
-  const [usuario, setUsuario] = useState("");
-  const [contraseña, setContraseña] = useState("");
-  const [nombre, setNombre] = useState("");
-  const [email, setEmail] = useState("");
-  const [idestado, setIdestado] = useState("");
-  const [idperfil, setIdperfil] = useState("");
+  const [perfil, setIdperfil] = useState("");
+  const [cantidad, setCantidad] = useState("");
+  const [producto, setProducto] = useState("");
+  const [subtotal, setsubtotal] = useState("");
+  const [iva, setiva] = useState("");
+  const [total, settotal] = useState("");
 
   useEffect(() => {
     const fetchData = async () => {
@@ -59,26 +59,25 @@ export default function AgregarVenta({ isOpen, onClose }) {
   const sendUsuario = () => {
     const url = "http://localhost/Proyectos/app-curd/backend/GetData.php";
     let fData = new FormData();
-    fData.append("cliente", usuario);
-    fData.append("cantidad", contraseña);
-    fData.append("producto", nombre);
-    fData.append("subtotal", email);
-    fData.append("iva", idestado);
-    fData.append("total", idperfil);
+    fData.append("idperfil", perfil);
+    fData.append("cantidad", cantidad);
+    fData.append("producto", producto);
+    fData.append("subtotal", subtotal);
+    fData.append("iva", iva);
+    fData.append("total", total);
 
     axios
       .post(url, fData)
       .then((response) => {
-        console.log(response.data);
         if (
-          response.data.sendUsuario &&
-          response.data.sendUsuario.result === "success"
+          response.data.sendVenta &&
+          response.data.sendVenta.result === "success"
         ) {
-          toast.success("Usuario registrado con éxito");
+          toast.success("venta registrada con éxito");
           onClose();
         } else {
           toast.error(
-            response.data.sendUsuario.error || "Error al registrar usuario"
+            response.data.sendVenta.error || "Error al registrar usuario"
           );
         }
       })
@@ -118,7 +117,7 @@ export default function AgregarVenta({ isOpen, onClose }) {
                 label="cantidad"
                 variant="bordered"
                 aria-label="cantidad"
-                onChange={(e) => setEmail(e.target.value)}
+                onChange={(e) => setCantidad(e.target.value)}
               />
               <Select
                 className="w-full"
@@ -128,7 +127,7 @@ export default function AgregarVenta({ isOpen, onClose }) {
               >
                 {productodata.map((producto) => (
                   <SelectItem
-                    onPress={() => setIdperfil(producto.id)}
+                    onPress={() => setProducto(producto.id)}
                     key={producto.id}
                   >
                     {producto.nombre}
@@ -140,19 +139,19 @@ export default function AgregarVenta({ isOpen, onClose }) {
                 label="subtotal"
                 variant="bordered"
                 aria-label="subtotal"
-                onChange={(e) => setEmail(e.target.value)}
+                onChange={(e) => setsubtotal(e.target.value)}
               />
               <Input
                 label="iva"
                 variant="bordered"
                 aria-label="iva"
-                onChange={(e) => setEmail(e.target.value)}
+                onChange={(e) => setiva(e.target.value)}
               />
               <Input
                 label="total"
                 variant="bordered"
                 aria-label="total"
-                onChange={(e) => setEmail(e.target.value)}
+                onChange={(e) => settotal(e.target.value)}
               />
             </ModalBody>
             <ModalFooter>

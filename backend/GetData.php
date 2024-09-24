@@ -196,6 +196,29 @@ function sendProdcuto($mysqli) {
     }
 }
 
+function sendVenta($mysqli) {
+
+    if (isset($_POST['idperfil'], $_POST['cantidad'], $_POST['producto'], $_POST['subtotal'], $_POST['iva'], $_POST['total'])) {
+        $idperfil = (int)$_POST['idperfil'];
+        $cantidad =(int)$_POST['cantidad'];
+        $producto = (int)$_POST['producto'];
+        $subtotal =(int)$_POST['subtotal'];
+        $iva = (int)$_POST['iva'];
+        $total = (int)$_POST['total'];
+
+        $stmt = $mysqli->prepare("INSERT INTO `ventas`(`idclientefk`, `idproductofk`, `cantidad`, `subtotal`, `iva`, `total`) VALUES (?, ?, ?, ?, ?, ?)");
+        $stmt->bind_param("iiiiii", $idperfil, $producto, $cantidad, $subtotal, $iva, $total);
+
+        if ($stmt->execute()) {
+            return ['result' => 'success'];
+        } else {
+            return ['error' => 'Error al registrar venta: ' . mysqli_error($mysqli)];
+        }
+    } else {
+        return ['error' => 'Faltan datos requeridos.'];
+    }
+}
+
 
 
 $response = [
@@ -205,7 +228,8 @@ $response = [
     'proveedores' => getproveedores($mysqli),
     'sendUsuario' => sendUsuario($mysqli), 
     'sendCliente' => sendCliente($mysqli), 
-    'sendProveedor' => sendProveedor($mysqli), 
+    'sendProveedor' => sendProveedor($mysqli),
+    'sendVenta' => sendVenta($mysqli),  
 
 ];
 
