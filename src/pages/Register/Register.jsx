@@ -63,7 +63,7 @@ const Register = () => {
           }, 2000);
         }
       })
-      .catch((error) => console.error(error)); // Puedes manejar el error aquí
+      .catch((error) => console.error(error));
   };
 
   return (
@@ -179,7 +179,7 @@ const Register = () => {
                     color="primary"
                     onClick={() => {
                       handleConfirm();
-                      onOpenChange(); // Cierra el modal después de confirmar
+                      onOpenChange();
                     }}
                   >
                     Confirmar

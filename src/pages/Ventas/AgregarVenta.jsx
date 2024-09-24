@@ -50,9 +50,9 @@ export default function AgregarVenta({ isOpen, onClose }) {
 
   useEffect(() => {
     if (isOpen) {
-      onOpen(); // Aquí llamas a onOpen de useDisclosure
+      onOpen();
     } else {
-      modalClose(); // Aquí llamas a modalClose de useDisclosure
+      modalClose();
     }
   }, [isOpen, onOpen, modalClose]);
 

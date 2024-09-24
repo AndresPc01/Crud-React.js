@@ -1,3 +1,4 @@
+/* eslint-disable react/prop-types */
 import { useEffect, useState } from "react";
 import {
   Modal,
@@ -16,9 +17,6 @@ import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
 export default function AgregarCliente({ isOpen, onClose }) {
-  const [error, setError] = useState(null);
-  const [loading, setLoading] = useState(true);
-
   const { isOpen: modalOpen, onOpen, onClose: modalClose } = useDisclosure();
 
   const [identidad, setIdentidad] = useState("");
@@ -112,13 +110,13 @@ export default function AgregarCliente({ isOpen, onClose }) {
             >
               <SelectItem
                 onPress={(e) => setIdestado_cliente(e.target.value)}
-                value={"1"}
+                value={1}
               >
                 Habilitado
               </SelectItem>
               <SelectItem
                 onPress={(e) => setIdestado_cliente(e.target.value)}
-                value={"2"}
+                value={2}
               >
                 Deshabilitado
               </SelectItem>

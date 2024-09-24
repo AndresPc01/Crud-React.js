@@ -110,9 +110,9 @@ export default function ConsulProveedor() {
 
   const handleUserEdit = (proveedor) => {
     setEditUser(proveedor);
-    setName(proveedor.nombre_proveedor); // Inicializa el estado
-    setTelefono(proveedor.telefono_proveedor); // Inicializa el estado
-    setCiudad(proveedor.ciudad_proveedor); // Inicializa el estado
+    setName(proveedor.nombre_proveedor);
+    setTelefono(proveedor.telefono_proveedor);
+    setCiudad(proveedor.ciudad_proveedor);
     openLoginModal();
     openLoginModal();
   };
@@ -132,16 +132,16 @@ export default function ConsulProveedor() {
           toast.success("Cambios Guardados");
           fetchProveedores();
         } else {
-          toast.error("Error: " + response.data.message); // Cambiar para mostrar un mensaje de error
+          toast.error("Error: " + response.data.message);
         }
       })
-      .catch((error) => setError("Error: " + error.message)); // Cambiar para mostrar un mensaje de error
+      .catch((error) => setError("Error: " + error.message));
   };
 
   const sendDeleteProveedor = (id) => {
     const URL = "http://localhost/Proyectos/app-curd/backend/EditUser.php";
     let fData = new FormData();
-    fData.append("action", "eliminarproveedor"); // Añadir acción
+    fData.append("action", "eliminarproveedor");
     fData.append("idcliente", id);
 
     axios

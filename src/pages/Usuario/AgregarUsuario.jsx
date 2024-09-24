@@ -1,3 +1,4 @@
+/* eslint-disable react/prop-types */
 import { useEffect, useState } from "react";
 import {
   Modal,
@@ -48,9 +49,9 @@ export default function AgregarUsuario({ isOpen, onClose }) {
 
   useEffect(() => {
     if (isOpen) {
-      onOpen(); // Aquí llamas a onOpen de useDisclosure
+      onOpen();
     } else {
-      modalClose(); // Aquí llamas a modalClose de useDisclosure
+      modalClose();
     }
   }, [isOpen, onOpen, modalClose]);
 

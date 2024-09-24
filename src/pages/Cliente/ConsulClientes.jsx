@@ -110,10 +110,10 @@ export default function ConsulCliente() {
 
   const handleUserEdit = (client) => {
     setEditUser(client);
-    setIdentidad(client.identidad); // Inicializa el estado
-    setName(client.name); // Inicializa el estado
-    setTelefono(client.telefono); // Inicializa el estado
-    setDireccion(client.direccion); // Inicializa el estado
+    setIdentidad(client.identidad);
+    setName(client.name);
+    setTelefono(client.telefono);
+    setDireccion(client.direccion);
     openLoginModal();
   };
 
@@ -142,7 +142,7 @@ export default function ConsulCliente() {
   const sendDeleteUser = (id) => {
     const URL = "http://localhost/Proyectos/app-curd/backend/EditUser.php";
     let fData = new FormData();
-    fData.append("action", "eliminarcliente"); // Añadir acción
+    fData.append("action", "eliminarcliente");
     fData.append("idcliente", id);
 
     axios

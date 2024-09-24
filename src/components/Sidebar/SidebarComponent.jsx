@@ -1,3 +1,4 @@
+/* eslint-disable react/prop-types */
 import { useEffect, useState } from "react";
 import { DataSideBar } from "../data/data";
 import { Link } from "react-router-dom";
@@ -79,8 +80,7 @@ const SidebarComponent = ({ expanMenu, openModal }) => {
                   <li className="p-3 hover:bg-slate-600 hover:cursor-pointer rounded-lg transition-colors text-nowrap">
                     <span
                       onClick={() => {
-                        console.log(`Abriendo modal para: ${item.menu}`); // Log para depuración
-                        openModal(item.menu); // Cambia item.menu a "usuarios" o "clientes"
+                        openModal(item.menu);
                       }}
                     >
                       Agregar {item.menu}
