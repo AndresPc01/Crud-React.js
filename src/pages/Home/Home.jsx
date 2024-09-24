@@ -8,6 +8,7 @@ import "./Home.css";
 import AgregarProveedor from "../Proveedores/AgregarProveedor";
 import AgregarProducto from "../Productos/AgregarProducto";
 import AgregarCliente from "../Cliente/AgregarCliente";
+import AgregarVenta from "../Ventas/AgregarVenta";
 
 const Home = () => {
   const [expanMenu, setExpanMenu] = useState(() => {
@@ -20,7 +21,6 @@ const Home = () => {
     return savedModalType ? JSON.parse(savedModalType) : null;
   });
 
-  // Inicializar cargando con localStorage
   const [cargando, setCargando] = useState(() => {
     const savedCargando = localStorage.getItem("cargando");
     return savedCargando ? JSON.parse(savedCargando) : true;
@@ -104,6 +104,9 @@ const Home = () => {
             isOpen={modalType === "Producto"}
             onClose={handleClose}
           />
+        )}
+        {modalType === "Venta" && (
+          <AgregarVenta isOpen={modalType === "Venta"} onClose={handleClose} />
         )}
       </main>
       <footer>footer</footer>

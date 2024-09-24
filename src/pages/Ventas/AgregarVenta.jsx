@@ -15,8 +15,9 @@ import axios from "axios";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
-export default function AgregarUsuario({ isOpen, onClose }) {
-  const [perfildata, setPerfildata] = useState([]);
+export default function AgregarVenta({ isOpen, onClose }) {
+  const [clientedata, setClientedata] = useState([]);
+  const [productodata, setProductodata] = useState([]);
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(true);
 
@@ -35,7 +36,8 @@ export default function AgregarUsuario({ isOpen, onClose }) {
         const response = await axios.get(
           "http://localhost/Proyectos/app-curd/backend/GetData.php"
         );
-        setPerfildata(response.data.perfil);
+        setProductodata(response.data.producto);
+        setClientedata(response.data.cliente);
       } catch (err) {
         setError(err);
       } finally {
@@ -57,12 +59,12 @@ export default function AgregarUsuario({ isOpen, onClose }) {
   const sendUsuario = () => {
     const url = "http://localhost/Proyectos/app-curd/backend/GetData.php";
     let fData = new FormData();
-    fData.append("usuario", usuario);
-    fData.append("contraseña", contraseña);
-    fData.append("nombre", nombre);
-    fData.append("email", email);
-    fData.append("idestado", idestado);
-    fData.append("idperfil", idperfil);
+    fData.append("cliente", usuario);
+    fData.append("cantidad", contraseña);
+    fData.append("producto", nombre);
+    fData.append("subtotal", email);
+    fData.append("iva", idestado);
+    fData.append("total", idperfil);
 
     axios
       .post(url, fData)
@@ -94,69 +96,64 @@ export default function AgregarUsuario({ isOpen, onClose }) {
         <ModalContent>
           <>
             <ModalHeader className="flex flex-col gap-1">
-              Agregar Usuario
+              Agregar Venta
             </ModalHeader>
             <ModalBody className="grid grid-cols-2">
+              <Select
+                className="w-full"
+                placeholder="Selecciona Cliente"
+                aria-label="Cliente"
+                name="idcliente"
+              >
+                {clientedata.map((cliente) => (
+                  <SelectItem
+                    onPress={() => setIdperfil(cliente.id)}
+                    key={cliente.id}
+                  >
+                    {cliente.nombre}
+                  </SelectItem>
+                ))}
+              </Select>
               <Input
-                label="Usuario"
+                label="cantidad"
                 variant="bordered"
-                aria-label="Usuario"
-                onChange={(e) => setUsuario(e.target.value)}
-              />
-              <Input
-                label="Contraseña"
-                variant="bordered"
-                type={isVisible ? "text" : "password"}
-                aria-label="Contraseña"
-                onChange={(e) => setContraseña(e.target.value)}
-              />
-              <Input
-                label="Nombre"
-                variant="bordered"
-                aria-label="Nombre"
-                onChange={(e) => setNombre(e.target.value)}
-              />
-              <Input
-                label="Email"
-                type="email"
-                variant="bordered"
-                aria-label="Email"
+                aria-label="cantidad"
                 onChange={(e) => setEmail(e.target.value)}
               />
               <Select
                 className="w-full"
-                placeholder="Selecciona el estado H o D"
-                name="idestado"
-                aria-label="Estado"
+                placeholder="Selecciona Producto"
+                aria-label="Producto"
+                name="idproducto"
               >
-                <SelectItem
-                  value={1}
-                  onPress={(e) => setIdestado(e.target.value)}
-                >
-                  Habilitado
-                </SelectItem>
-                <SelectItem
-                  value={2}
-                  onPress={(e) => setIdestado(e.target.value)}
-                >
-                  Desabilitado
-                </SelectItem>
-              </Select>
-              <Select
-                className="w-full"
-                placeholder="Selecciona el tipo de perfil"
-                aria-label="Tipo de perfil"
-                name="idperfil"
-              >
-                {perfildata.map((perfi) => (
+                {productodata.map((producto) => (
                   <SelectItem
-                    onPress={() => setIdperfil(perfi.id)}
-                    key={perfi.id}
+                    onPress={() => setIdperfil(producto.id)}
+                    key={producto.id}
                   >
-                    {perfi.nombre_perfil}
+                    {producto.nombre}
                   </SelectItem>
                 ))}
               </Select>
+
+              <Input
+                label="subtotal"
+                variant="bordered"
+                aria-label="subtotal"
+                onChange={(e) => setEmail(e.target.value)}
+              />
+              <Input
+                label="iva"
+                variant="bordered"
+                aria-label="iva"
+                onChange={(e) => setEmail(e.target.value)}
+              />
+              <Input
+                label="total"
+                variant="bordered"
+                aria-label="total"
+                onChange={(e) => setEmail(e.target.value)}
+              />
             </ModalBody>
             <ModalFooter>
               <Button color="primary" onPress={() => sendUsuario()}>

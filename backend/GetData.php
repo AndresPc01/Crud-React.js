@@ -32,6 +32,56 @@ function getperfiles($mysqli) {
     }
 }
 
+function getcliente($mysqli) {
+    $sql = mysqli_query($mysqli, "SELECT 
+        c.idcliente,
+        c.nombre
+    FROM 
+        cliente c 
+    ");
+
+    $cliente = [];
+
+    if ($sql) {
+        while ($row = mysqli_fetch_assoc($sql)) {
+            $cliente[] = [
+                'id' => $row['idcliente'],
+                'nombre' => $row['nombre'],
+
+            ];
+        }
+        return $cliente;
+    } else {
+        return ['error' => 'Error en la consulta de usuarios: ' . mysqli_error($mysqli)];
+    }
+}
+
+
+function getproducto($mysqli) {
+    $sql = mysqli_query($mysqli, "SELECT 
+        p.idproducto,
+        p.nombre_producto
+    FROM 
+        producto p 
+    ");
+
+    $cliente = [];
+
+    if ($sql) {
+        while ($row = mysqli_fetch_assoc($sql)) {
+            $cliente[] = [
+                'id' => $row['idproducto'],
+                'nombre' => $row['nombre_producto'],
+
+            ];
+        }
+        return $cliente;
+    } else {
+        return ['error' => 'Error en la consulta de usuarios: ' . mysqli_error($mysqli)];
+    }
+}
+
+
 function getproveedores($mysqli) {
     $sql = mysqli_query($mysqli, "SELECT 
         p.idproveedor,
@@ -149,7 +199,9 @@ function sendProdcuto($mysqli) {
 
 
 $response = [
+    'cliente' => getcliente($mysqli),
     'perfil' => getperfiles($mysqli),
+    'producto' => getproducto($mysqli),
     'proveedores' => getproveedores($mysqli),
     'sendUsuario' => sendUsuario($mysqli), 
     'sendCliente' => sendCliente($mysqli), 
